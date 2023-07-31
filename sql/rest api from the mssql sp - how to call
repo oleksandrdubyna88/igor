@@ -1,0 +1,18 @@
+GO
+
+DECLARE @Result INT, @Status INT = 1, @StatusText VARCHAR(100), @ResponseText NVARCHAR(MAX), @PostData NVARCHAR(MAX), @AuthHeader NVARCHAR(MAX)
+
+EXEC    @Result = dbo.usp_sys_InvokeWebService 'GET', 'https://localhost:7091/', @Timeout = 5
+                        , @Status = @Status OUTPUT, @StatusText = @StatusText OUTPUT, @ResponseText = @ResponseText OUTPUT
+SELECT  @Result AS Result, @Status AS Status, @StatusText AS StatusText, @ResponseText AS ResponseText
+
+
+SELECT  @PostData = '{ "id": 55 }'
+SELECT  @AuthHeader = 'aaaaeee'
+EXEC    @Result = dbo.usp_sys_InvokeWebService 'post', 'https://localhost:7091/', @Timeout = 5
+                        , @Status = @Status OUTPUT, @StatusText = @StatusText OUTPUT, @ResponseText = @ResponseText OUTPUT, @PostData=@PostData, @AuthHeader = @AuthHeader
+SELECT  @Result AS Result, @Status AS Status, @StatusText AS StatusText, @ResponseText AS ResponseText
+
+EXEC    @Result = dbo.usp_sys_InvokeWebService 'put', 'https://localhost:7091/', @Timeout = 5
+                        , @Status = @Status OUTPUT, @StatusText = @StatusText OUTPUT, @ResponseText = @ResponseText OUTPUT, @PostData=@PostData
+SELECT  @Result AS Result, @Status AS Status, @StatusText AS StatusText, @ResponseText AS ResponseText
