@@ -1,0 +1,16 @@
+GO
+--oauth2
+DECLARE @OutputString NVARCHAR(MAX);
+EXEC [dbo].[GetKey] '11', '22', @OutputString OUTPUT;
+
+--PUT
+DECLARE @Result INT, @Status INT = 1, @StatusText VARCHAR(100), @ResponseText NVARCHAR(MAX), @PostData NVARCHAR(MAX), @AuthHeader NVARCHAR(MAX), @UrlString NVARCHAR(MAX)
+SELECT  @UrlString = 'https://localhost:44372/'
+SELECT  @AuthHeader = @OutputString;
+
+--Generating data for request body 
+SELECT TOP 1 @PostData = N'{"id": "' + CAST(guid AS NVARCHAR(36)) + '"}' FROM Test1
+
+EXEC    @Result = dbo.usp_sys_InvokeWebService 'put', @UrlString, @Timeout = 5
+                        , @Status = @Status OUTPUT, @StatusText = @StatusText OUTPUT, @ResponseText = @ResponseText OUTPUT, @PostData=@PostData, @AuthHeader = @AuthHeader
+SELECT  @Result AS Result, @Status AS Status, @StatusText AS StatusText, @ResponseText AS ResponseText
