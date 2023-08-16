@@ -12,24 +12,24 @@ CREATE TABLE Test1 (
 END;
 
 --oauth2
-DECLARE @OutputString NVARCHAR(MAX);
-EXEC [dbo].[GetKey] '11', '22', @OutputString OUTPUT;
+DECLARE @outputString NVARCHAR(MAX);
+EXEC [dbo].[GetKey] '11', '22', @outputString OUTPUT;
 
 --GET
-DECLARE @Result INT, @Status INT = 1, @StatusText VARCHAR(100), @ResponseText NVARCHAR(MAX), @PostData NVARCHAR(MAX), @AuthHeader NVARCHAR(MAX), @UrlString NVARCHAR(MAX)
-SELECT  @UrlString = 'https://localhost:44372/'
-SELECT @AuthHeader =  @OutputString;
+DECLARE @result INT, @status INT = 1, @statusText VARCHAR(100), @responseText NVARCHAR(MAX), @postData NVARCHAR(MAX), @authHeader NVARCHAR(MAX), @urlString NVARCHAR(MAX)
+SELECT  @urlString = 'https://localhost:5001/'
+SELECT @authHeader =  @outputString;
 
-EXEC    @Result = dbo.usp_sys_InvokeWebService 'GET', @UrlString, @Timeout = 5
-                        , @Status = @Status OUTPUT, @StatusText = @StatusText OUTPUT, @ResponseText = @ResponseText OUTPUT, @AuthHeader = @AuthHeader
-SELECT  @Result AS Result, @Status AS Status, @StatusText AS StatusText, @ResponseText AS ResponseText
+EXEC    @result = dbo.usp_sys_InvokeWebService 'GET', @urlString, @timeout = 5
+                        , @status = @status OUTPUT, @statusText = @statusText OUTPUT, @responseText = @responseText OUTPUT, @authHeader = @authHeader
+SELECT  @result AS result, @status AS status, @statusText AS statusText, @responseText AS responseText
 
 --Saving data from get request to database 
-IF @Result = 0
+IF @result = 0
 BEGIN
 INSERT INTO Test1 (guid, senderId, recipientId, shipmentType, globalShipmentNumber)
 SELECT 
-    JSON_VALUE(@ResponseText, '$.id') AS guid,
+    JSON_VALUE(@ResponseText, '$.guid') AS guid,
     JSON_VALUE(@ResponseText, '$.senderId') AS senderId,
     JSON_VALUE(@ResponseText, '$.recipientId') AS recipientId,
     JSON_VALUE(@ResponseText, '$.shipmentType') AS shipmentType,

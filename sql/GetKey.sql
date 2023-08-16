@@ -2,19 +2,19 @@ CREATE PROCEDURE [dbo].[GetKey]
        -- Add the parameters for the stored procedure here
        @key NVARCHAR(MAX),
        @secret NVARCHAR(MAX),
-       @Token NVARCHAR(MAX) OUTPUT
+       @token NVARCHAR(MAX) OUTPUT
 AS
 BEGIN
-DECLARE @AutResult INT, @AutStatus INT = 1, @AutStatusText VARCHAR(100), @AutResponseText NVARCHAR(MAX), @AutPostData NVARCHAR(MAX), @AutUrlString NVARCHAR(MAX)
-DECLARE @NewGuidString NVARCHAR(36);
+DECLARE @autResult INT, @autStatus INT = 1, @autStatusText VARCHAR(100), @autResponseText NVARCHAR(MAX), @autPostData NVARCHAR(MAX), @autUrlString NVARCHAR(MAX)
+DECLARE @newGuidString NVARCHAR(36);
 
-SET @NewGuidString = CONVERT(NVARCHAR(36), NEWID());
-SET @AutPostData = '{"body": "grant_type=client_credentials&client_id=key&client_secret=secret&scope=https://management.azure.com//.default"}';
-SELECT @AutUrlString = 'https://localhost:44372/' + @NewGuidString + '/oauth2/v2.0/token';
+SET @newGuidString = CONVERT(NVARCHAR(36), NEWID());
+SET @autPostData = 'grant_type=client_credentials&client_id='+ @key +'&client_secret='+ @secret +'&scope=https://management.azure.com//.default';
+SELECT @autUrlString = 'https://localhost:5001/' + @NewGuidString + '/oauth2/v2.0/token';
 
-EXEC    @AutResult = dbo.usp_sys_InvokeWebService 'post', @AutUrlString, @Timeout = 5
-                        , @Status = @AutStatus OUTPUT, @StatusText = @AutStatusText OUTPUT, @ResponseText = @AutResponseText OUTPUT, @PostData=@AutPostData
+EXEC    @autResult = dbo.usp_sys_InvokeWebService 'post', @autUrlString, @Timeout = 5
+                        , @status = @autStatus OUTPUT, @statusText = @autStatusText OUTPUT, @responseText = @autResponseText OUTPUT, @postData=@autPostData
 
-SET @Token = @AutResponseText
+SET @token = @autResponseText
 END
 GO
