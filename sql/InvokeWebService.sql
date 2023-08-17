@@ -1,4 +1,4 @@
-IF OBJECT_ID('usp_sys_InvokeWebService') IS NOT NULL DROP PROC usp_sys_InvokeWebService
+IF OBJECT_ID('InvokeWebService') IS NOT NULL DROP PROC InvokeWebService
 GO
 /*
 DECLARE @Result INT, @Status INT, @StatusText VARCHAR(100), @ResponseText NVARCHAR(MAX)
@@ -14,7 +14,7 @@ EXEC    @Result = dbo.usp_sys_InvokeWebService 'POST', 'http://api.sample.com/te
 SELECT  @Result AS Result, @Status AS Status, @StatusText AS StatusText
 */
 
-CREATE PROC usp_sys_InvokeWebService(
+CREATE PROC InvokeWebService(
             @Verb           VARCHAR(100)
             , @Url          VARCHAR(1000)
             , @AuthHeader   VARCHAR(100)    = NULL

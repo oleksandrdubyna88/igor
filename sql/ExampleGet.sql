@@ -20,7 +20,7 @@ DECLARE @result INT, @status INT = 1, @statusText VARCHAR(100), @responseText NV
 SELECT  @urlString = 'https://localhost:5001/'
 SELECT @authHeader =  @outputString;
 
-EXEC    @result = dbo.usp_sys_InvokeWebService 'GET', @urlString, @timeout = 5
+EXEC    @result = dbo.InvokeWebService 'GET', @urlString, @timeout = 5
                         , @status = @status OUTPUT, @statusText = @statusText OUTPUT, @responseText = @responseText OUTPUT, @authHeader = @authHeader
 SELECT  @result AS result, @status AS status, @statusText AS statusText, @responseText AS responseText
 

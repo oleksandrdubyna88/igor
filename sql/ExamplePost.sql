@@ -15,6 +15,6 @@ SET @postData = (
     FOR JSON AUTO
 );
 
-EXEC    @result = dbo.usp_sys_InvokeWebService 'post', @urlString, @timeout = 5
+EXEC    @result = dbo.InvokeWebService 'post', @urlString, @timeout = 5
                         , @status = @status OUTPUT, @statusText = @statusText OUTPUT, @responseText = @responseText OUTPUT, @postData=@postData, @authHeader = @authHeader
 SELECT  @result AS result, @status AS status, @statusText AS statusText, @responseText AS responseText
