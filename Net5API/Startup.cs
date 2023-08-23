@@ -10,6 +10,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Net5API
 {
@@ -75,15 +76,30 @@ namespace Net5API
                 endpoints.MapGet("/", async context =>
                 {
                     var authorization = context.Request.Headers["Authorization"].ToString();
-                    await context.Response.WriteAsJsonAsync(new Rootobject { guid = Guid.NewGuid(), senderId = "testSenderId", recipientId = "testRecipientId", shipmentType = "HOUSE", globalShipmentNumber = "00001" });
+                    await context.Response.WriteAsJsonAsync(new Rootobject 
+                    { 
+                        guid = Guid.NewGuid(), 
+                        senderId = "testSenderId", 
+                        shipmentType = "HOUSE", 
+                        modeOfTransport = "SEA", 
+                        globalShipmentNumber = "00001", 
+                        containers = new Containers 
+                        {
+                            containerQuantity = "Container Quantity",
+                            containerType = "Container Type",
+                            type = "PreCarriage"
+                        }
+                    });
                 });
 
                 endpoints.MapPost("/", async context =>
                 {
+                    await Task.Delay(3000);
+
                     var authorization = context.Request.Headers["Authorization"].ToString();
 
                     var jsonString = await new StreamReader(context.Request.Body).ReadToEndAsync();
-                    var model = JsonConvert.DeserializeObject<List<Rootobject>>(jsonString);
+                    var model = JsonConvert.DeserializeObject<Rootobject>(jsonString);
 
                     if(model == null)
                     {
@@ -120,8 +136,16 @@ namespace Net5API
     {
         public Guid guid { get; set; }
         public string senderId { get; set; }
-        public string recipientId { get; set; }
         public string shipmentType { get; set; }
+        public string modeOfTransport { get; set; }
         public string globalShipmentNumber { get; set; }
+        public Containers containers { get; set; }
+    }
+
+    public class Containers
+    {
+        public string containerQuantity { get; set; }
+        public string containerType { get; set; }
+        public string type { get; set; }
     }
 }

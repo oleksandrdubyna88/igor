@@ -11,10 +11,13 @@ DECLARE
     @statusText VARCHAR(100),
     @responseText NVARCHAR(MAX),
     @postData NVARCHAR(MAX),
+    @postDataOld NVARCHAR(MAX),
     @authHeader NVARCHAR(MAX),
     @urlString NVARCHAR(MAX),
     @httpTypeMethod NVARCHAR(MAX),
-    @DIHNumber NVARCHAR(MAX);
+    @DIHNumber NVARCHAR(MAX),
+    @requestDate NVARCHAR(MAX),
+    @responseDate NVARCHAR(MAX);
 
 SELECT @urlString = 'https://localhost:5001/'
 SELECT @authHeader = @outputString;
@@ -22,13 +25,16 @@ SELECT @httpTypeMethod = 'post';
 SELECT @DIHNumber = '0110';
 
 --Generating data for request body
-SET @postData =
+SET @postDataOld =
 
 ( SELECT TOP 1
     *
 FROM Test1
 FOR JSON AUTO);
 
+SET @postData = '{"senderId": "11", "shipmentType": "HOUSE", "modeOfTransport": "SEA", "globalShipmentNumber": "00001", "containers": { "containerQuantity": "Container Quantity", "containerType": "Container Type", "type": "PreCarriage"}}';
+
+SET @requestDate = GETDATE();
 
 EXEC @result = dbo.InvokeWebService @httpTypeMethod,
                                     @urlString,
@@ -42,6 +48,8 @@ SELECT @result AS result,
     @status AS status,
     @statusText AS statusText,
     @responseText AS responseText
+
+SET @responseDate = GETDATE();
 
 IF @Status = 400
 			BEGIN
@@ -70,8 +78,8 @@ IF @Status = 200
                     ProcName, 
                     rowguid)
 				VALUES (
-                    GETDATE(), 
-                    GETDATE(), 
+                    @RequestDate, 
+                    @ResponseDate, 
                     @PostData, 
                     @ResponseText, 
                     @httpTypeMethod, 
