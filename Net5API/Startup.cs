@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -80,14 +81,27 @@ namespace Net5API
                 endpoints.MapPost("/", async context =>
                 {
                     var authorization = context.Request.Headers["Authorization"].ToString();
-                    var model = await context.Request.ReadFromJsonAsync<List<Rootobject>>();
+
+                    var jsonString = await new StreamReader(context.Request.Body).ReadToEndAsync();
+                    var model = JsonConvert.DeserializeObject<List<Rootobject>>(jsonString);
+
+                    if(model == null)
+                    {
+                        context.Response.StatusCode = 400;
+                        await context.Response.WriteAsync("Invalid input data");
+                        return;
+                    }
+
                     await context.Response.WriteAsJsonAsync(model);
                 });
 
                 endpoints.MapPut("/", async context =>
                 {
                     var authorization = context.Request.Headers["Authorization"].ToString();
-                    var model = await context.Request.ReadFromJsonAsync<List<Rootobject>>();
+
+                    var jsonString = await new StreamReader(context.Request.Body).ReadToEndAsync();
+                    var model = JsonConvert.DeserializeObject<List<Rootobject>>(jsonString);
+
                     await context.Response.WriteAsJsonAsync(model);
                 });
 
@@ -95,6 +109,7 @@ namespace Net5API
                 {
                     var authorization = context.Request.Headers["Authorization"].ToString();
                     var id = context.Request.RouteValues["id"] as string;
+
                     await context.Response.WriteAsJsonAsync($"Deleted record with ID: {id}");
                 });
             });
