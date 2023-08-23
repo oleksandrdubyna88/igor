@@ -32,7 +32,17 @@ SET @postDataOld =
 FROM Test1
 FOR JSON AUTO);
 
-SET @postData = '{"senderId": "11", "shipmentType": "HOUSE", "modeOfTransport": "SEA", "globalShipmentNumber": "00001", "containers": { "containerQuantity": "Container Quantity", "containerType": "Container Type", "type": "PreCarriage"}}';
+SET @postData = '{
+    "senderId": "11",
+    "shipmentType": "HOUSE",
+    "modeOfTransport": "SEA",
+    "globalShipmentNumber": "00001",
+    "containers": {
+        "containerQuantity": "Container Quantity",
+        "containerType": "Container Type",
+        "type": "PreCarriage"
+    }
+}';
 
 SET @requestDate = GETDATE();
 
