@@ -81,6 +81,7 @@ namespace Net5API
                 {
                     var authorization = context.Request.Headers["Authorization"].ToString();
                     var model = await context.Request.ReadFromJsonAsync<List<Rootobject>>();
+                    //context.Response.StatusCode = 400;
                     await context.Response.WriteAsJsonAsync(model);
                 });
 
