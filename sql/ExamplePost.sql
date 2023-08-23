@@ -16,8 +16,8 @@ DECLARE
     @urlString NVARCHAR(MAX),
     @httpTypeMethod NVARCHAR(MAX),
     @DIHNumber NVARCHAR(MAX),
-    @requestDate NVARCHAR(MAX),
-    @responseDate NVARCHAR(MAX);
+    @requestDate DATETIME,
+    @responseDate DATETIME;
 
 SELECT @urlString = 'https://localhost:5001/'
 SELECT @authHeader = @outputString;
