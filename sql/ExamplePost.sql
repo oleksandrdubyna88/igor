@@ -33,15 +33,12 @@ FROM Test1
 FOR JSON AUTO);
 
 SET @postData = '{
-    "senderId": "11",
+    "senderId": "TGOPS",
+	"recipientId": "SGL",
     "shipmentType": "HOUSE",
-    "modeOfTransport": "SEA",
-    "globalShipmentNumber": "00001",
-    "containers": {
-        "containerQuantity": "Container Quantity",
-        "containerType": "Container Type",
-        "type": "PreCarriage"
-    }
+    "modeOfTransport": "ROAD",
+	"localShipmentNumber": "22234",
+    "globalShipmentNumber": "NORAM-99884"
 }';
 
 SET @requestDate = GETDATE();
@@ -61,24 +58,7 @@ SELECT @result AS result,
 
 SET @responseDate = GETDATE();
 
-IF @Status = 400
-			BEGIN
-				INSERT INTO FAIL_LOG 
-                    (DIHNumber, 
-                    ErrorMessage, 
-                    DateAdded, 
-                    ProcName, 
-                    rowguid)
-				VALUES (
-                    @DIHNumber ,
-                    @ResponseText, 
-                    GETDATE(), 
-                    @httpTypeMethod, 
-                    CONVERT(NVARCHAR(36), 
-                    NEWID()))
-			END
-
-IF @Status = 200
+IF @Status = 200 AND JSON_VALUE(@ResponseText, '$.data.failData') = 0
 			BEGIN
 				INSERT INTO DIH_SERVICE_LOG 
                     (RequestDate, 
@@ -96,3 +76,19 @@ IF @Status = 200
                     CONVERT(NVARCHAR(36), 
                     NEWID()))
 			END
+ELSE
+	BEGIN
+					INSERT INTO FAIL_LOG 
+                    (DIHNumber, 
+                    ErrorMessage, 
+                    DateAdded, 
+                    ProcName, 
+                    rowguid)
+				VALUES (
+                    @DIHNumber ,
+                    @ResponseText, 
+                    GETDATE(), 
+                    @httpTypeMethod, 
+                    CONVERT(NVARCHAR(36), 
+                    NEWID()))
+	END

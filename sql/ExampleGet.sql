@@ -7,6 +7,8 @@ CREATE TABLE Test1 (
     senderId NVARCHAR(MAX),
     recipientId NVARCHAR(MAX),
     shipmentType NVARCHAR(MAX), 
+    modeOfTransport NVARCHAR(MAX),
+    localShipmentNumber NVARCHAR(MAX),
     globalShipmentNumber NVARCHAR(MAX) 
 );
 END;
@@ -27,11 +29,13 @@ SELECT  @result AS result, @status AS status, @statusText AS statusText, @respon
 --Saving data from get request to database 
 IF @result = 0
 BEGIN
-INSERT INTO Test1 (guid, senderId, recipientId, shipmentType, globalShipmentNumber)
+INSERT INTO Test1 (guid, senderId, recipientId, shipmentType, modeOfTransport, localShipmentNumber, globalShipmentNumber)
 SELECT 
     JSON_VALUE(@ResponseText, '$.guid') AS guid,
     JSON_VALUE(@ResponseText, '$.senderId') AS senderId,
     JSON_VALUE(@ResponseText, '$.recipientId') AS recipientId,
     JSON_VALUE(@ResponseText, '$.shipmentType') AS shipmentType,
+    JSON_VALUE(@ResponseText, '$.modeOfTransport') AS modeOfTransport,
+    JSON_VALUE(@ResponseText, '$.localShipmentNumber') AS localShipmentNumber,
     JSON_VALUE(@ResponseText, '$.globalShipmentNumber') AS globalShipmentNumber;
 END
