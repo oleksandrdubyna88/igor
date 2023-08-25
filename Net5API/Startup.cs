@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
+using System.Reflection.PortableExecutable;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -90,12 +91,10 @@ namespace Net5API
 
                 endpoints.MapPost("/", async context =>
                 {
-                    await Task.Delay(3000);
-
                     var authorization = context.Request.Headers["Authorization"].ToString();
 
                     var jsonString = await new StreamReader(context.Request.Body).ReadToEndAsync();
-                    var model = JsonConvert.DeserializeObject<Rootobject>(jsonString);
+                    var model = JsonConvert.DeserializeObject<List<Rootobject>>(jsonString);
 
                     if(model == null)
                     {
@@ -104,7 +103,31 @@ namespace Net5API
                         return;
                     }
 
-                    await context.Response.WriteAsJsonAsync(new SampleResponse() { data = new Data() { failData = 1 } });
+                    await context.Response.WriteAsJsonAsync(new Response()
+                    {
+                        header = new Header()
+                        {
+                            messages = "All records failed"
+                        },
+
+                        data = new Data()
+                        {
+                            totalData = 1,
+                            successData = 0,
+                            failData = 1,
+                            successRowsData = new List<SuccessRowsDatum>()
+                            {
+                            },
+                            failRowsData = new List<FailRowsDatum>()
+                            {
+                                new FailRowsDatum()
+                                {
+                                    globalShipmentNumber = "39C313010",
+                                    errorMessage = "globalShipmentNumber 39C313010 already exists"
+                                }
+                            }
+                        }
+                    });
                 });
 
                 endpoints.MapPut("/", async context =>
@@ -139,13 +162,35 @@ namespace Net5API
         public string globalShipmentNumber { get; set; }
     }
 
-    public class SampleResponse
+    public class Response
     {
+        public Header header { get; set; }
         public Data data { get; set; }
+    }
+
+    public class Header
+    {
+        public string messages { get; set; }
     }
 
     public class Data
     {
+        public int totalData { get; set; }
+        public int successData { get; set; }
         public int failData { get; set; }
+        public List<SuccessRowsDatum> successRowsData { get; set; }
+        public List<FailRowsDatum> failRowsData { get; set; }
+    }
+
+    public class FailRowsDatum
+    {
+        public string globalShipmentNumber { get; set; }
+        public string errorMessage { get; set; }
+    }
+
+    public class SuccessRowsDatum
+    {
+        public string globalShipmentNumber { get; set; }
+        public string successMessage { get; set; }
     }
 }
