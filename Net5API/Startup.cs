@@ -33,7 +33,11 @@ namespace Net5API
         public void Configure(IApplicationBuilder app)
         {
             app.UseRouting();
-
+            app.Use(next => context =>
+            {
+                context.Request.EnableBuffering();
+                return next(context);
+            });
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapPost("/{id}/oauth2/v2.0/token", async context =>
