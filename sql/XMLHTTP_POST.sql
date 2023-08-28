@@ -25,7 +25,7 @@ SELECT @DIHNumber = '0110';
 SELECT @httpTypeMethod = 'post';
 
 SET @contentType = 'application/json';
-SET @url = 'https://localhost:5001/';
+SET @url = 'http://localhost:5000/';
 	IF (@url IS NULL OR @url = '')
 		BEGIN
 			SELECT @url = EndPointUrl FROM [EndPoint] WHERE EndPointName = 'CreateShipment'
