@@ -18,11 +18,11 @@ EXEC msdb.dbo.sysmail_add_account_sp
   @password = 'your_password',
   @use_default_credentials = 0;
 
-  EXEC msdb.dbo.sysmail_add_profile_sp
+EXEC msdb.dbo.sysmail_add_profile_sp
   @profile_name = 'MyEmailProfile',
   @description = 'Profile for sending email notifications';
 
-  EXEC msdb.dbo.sysmail_add_profileaccount_sp
+EXEC msdb.dbo.sysmail_add_profileaccount_sp
   @profile_name = 'MyEmailProfile',
   @account_name = 'MyEmailAccount',
   @sequence_number = 1;
@@ -34,3 +34,8 @@ EXEC msdb.dbo.sp_send_dbmail
   @recipients = 'recipient@example.com',
   @subject = 'Test Email',
   @body = 'This is a test email.';
+
+--Email log
+USE msdb;
+GO
+SELECT * FROM dbo.sysmail_event_log;
